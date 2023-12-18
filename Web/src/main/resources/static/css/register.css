@@ -1,0 +1,44 @@
+*{
+    font-family: 'Noto Sans KR';
+}
+
+.rname {
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    right: 148px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+input:focus {outline: 2px solid #00C473FF;}
+.rinput{
+    padding: 12px;
+    font-size: 16px;
+    height: 25px;
+    width: 345px;
+    border: 1px solid #e0e4ed;
+    border-radius: 4px;
+    margin-bottom: 25px;
+}
+
+.nameInput{
+    margin: 124px auto;
+    text-align: center;
+
+}
+
+.registerButton{
+    border-radius: 6px;
+    color: #fff;
+    background-color: #00c473;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 30px;
+    width: 371px;
+    height: 55px;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    border: none;
+}

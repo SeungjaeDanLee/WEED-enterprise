@@ -1,0 +1,28 @@
+{{>layouts/W1003_header}}
+
+<style>
+    body{
+        background-color: white;
+    }
+    .rotating-image {
+        width: 300px;
+        animation: rotate 10s linear infinite; /* 10s 동안 360도 회전, linear로 부드럽게 */
+        margin-left: 100px;
+        margin-bottom: 15px;
+        margin-right: 35px;
+    }
+
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+<div style="display: flex">
+
+<img src="https://weedbucket.s3.ap-northeast-2.amazonaws.com/img/mainPage3.png" style="margin-top: 95px;width: 692px;margin-left: 160px;margin-bottom: 15px;margin-right: 35px;">
+<img class="rotating-image" src="https://weedbucket.s3.ap-northeast-2.amazonaws.com/img/trun.png" style="position: relative;width: 670px;margin-left: 100px;margin-bottom: 30px;margin-right: 35px;top: 56px;">
+</div>

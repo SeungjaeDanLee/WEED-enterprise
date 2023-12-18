@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+
+    {{>layouts/W1003_header}}     <!-- 헤더 레이아웃 불러오기 -->
+
+    <!-- FullCallander 스크립트 -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+    <script src="../js/W1004index.js?ver=1"></script>
+    <script src="../js/W1004sc.js?ver=1"></script>
+
+
+
+    <!-- 외부 css 불러오기 (캘린더 커스텀 css) -->
+    <link rel="stylesheet" href="../css/W1004cs.css?ver=1" type="text/css">
+
+
+
+</head>
+
+<body>
+
+<div id='calendar'></div>
+
+<!-- 이벤트를 생성하는 모달창 -->
+<div id="eventModal" class="modal">
+    <div class="modalTitle">일정추가</div>
+
+    <div class="contentBox">
+        <div class="eventFormGroup">
+            <label for="eventTitle" class="eventText">일정 제목:</label><br>
+            <input type="text" id="eventTitle" class="inputTitle"><br>
+        </div>
+
+        <div class="eventFormGroup">
+            <label for="eventTitle" class="eventText">시작일:</label>
+            <input type="date" id="startDate">
+            <label for="eventTitle" class="eventText">종료일:</label>
+            <input type="date"  id="endDate">
+        </div>
+
+        <div>
+            <label for="eventTitle" class="eventText">색깔설정:</label>
+            <input type="color" id="eventcolor" class="colorstyle" value="#7A9DA8">
+        </div>
+
+        <div class="eventFormGroup">
+            <label for="eventContent" class="eventText">일정 내용:</label><br>
+            <textarea type="text" id="eventContent" class="inputContent"></textarea><br>
+        </div>
+    </div>
+
+    <div class="modalbutton">
+        <button id="closeModalsell" class="closeEvent">취소</button>
+        <button id="saveEvent" class="saveEvent">저장</button>
+    </div>
+</div>
+
+<!-- 이벤트 상세 모달창 -->
+<div id="eventModalDetail" class="modal-detail">
+    <div class="modalTitle" id="EventMember">이름</div>
+
+    <div class="contentBox">
+        <div class="eventFormGroup">
+            <div class="eventText">일정 제목:</div>
+            <div id="eventTitleDetail" class="Title"></div>
+        </div>
+
+        <div class="eventFormGroup">
+            <div class="eventText">시작일:</div>
+            <div id="startDateDetail"></div>
+            <div class="eventText">종료일:</div>
+            <div id="endDateDetail" ></div>
+        </div>
+
+        <div class="eventFormGroup">
+            <div class="eventText">일정 내용:</div>
+            <div id="eventContentDetail" class="inputContent"></div>
+        </div>
+    </div>
+
+    <div id="modalButtonContainer" class="modalbutton">
+        <div class="deletediv">
+            <button id="deleteModalDetail" class="deleteEvent">삭제</button>
+        </div>
+        <button id="closeModalDetail" class="closeEvent">취소</button>
+        <button id="ModifyButton" class="saveEvent">수정</button>
+    </div>
+</div>
+
+<!-- 이벤트를 수정하는 모달창 -->
+<div id="modifyModal" class="modal">
+    <div class="modalTitle">일정추가</div>
+
+    <div class="contentBox">
+        <div class="eventFormGroup">
+            <label for="eventTitle" class="eventText">일정 제목:</label><br>
+            <input type="text" id="modifyTitle" class="inputTitle"><br>
+        </div>
+
+        <div class="eventFormGroup">
+            <label for="eventTitle" class="eventText">시작일:</label>
+            <input type="date" id="modifyStartDate">
+            <label for="eventTitle" class="eventText">종료일:</label>
+            <input type="date"  id="modifyEndDate">
+        </div>
+
+        <div>
+            <label for="eventTitle" class="eventText">색깔설정:</label>
+            <input type="color" id="modifycolor" class="colorstyle" value="#7A9DA8">
+        </div>
+
+        <div class="eventFormGroup">
+            <label for="eventContent" class="eventText">일정 내용:</label><br>
+            <textarea type="text" id="modifyContent" class="inputContent"></textarea><br>
+        </div>
+    </div>
+
+    <div class="modalbutton">
+        <button id="modifycloseModal" class="closeEvent">취소</button>
+        <button id="modifysaveButton" class="saveEvent">저장</button>
+    </div>
+</div>
+
+</body>
+
+
+
+</html>

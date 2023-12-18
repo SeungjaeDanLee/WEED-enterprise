@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Noto+Sans+KR:wght@500;600;700&family=Single+Day&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!--내용-->
+<form id="form-register" onsubmit="return false;">
+    <div class="nameInput" style="margin-top: 60px;display: flex;justify-content: space-evenly;">
+        <div style="height: 754px;width: 500px;border: 1px solid #d2cfcf;">
+        <h1 style="margin: 0 auto;text-align: center;margin-top:50px;position: relative;margin-bottom: 55px;right: 124px;">회원가입</h1>
+
+        <div class="rname" style="right: 171px">이름</div>
+        <div>
+            <div>
+                <input placeholder="이름 입력" class="rinput" name="name" id="name">
+                <div id="name-error" style="color: red;">{{#nameError}}{{nameError}}{{/nameError}}</div>
+            </div>
+        </div>
+
+        <div class="rname" style="right:163px " id="en">이메일</div>
+        <div>
+            <div>
+                <input placeholder="이메일 입력" class="rinput" id="email" name="email">
+                <div id="olmessage" style="color:#00C473FF;"></div>
+                <div id="email-error" style="color: red;">{{#emailError}}{{emailError}}{{/emailError}}</div>
+            </div>
+        </div>
+
+        <div class="rname" style="right:154px;">비밀번호</div>
+        <div>
+            <div>
+                <input placeholder="비밀번호 입력" class="rinput" name="password" id="password" type="password">
+                <div id="password-confirm-error" style="color: red; margin-bottom: 10px;">{{#passwordConfirmError}}{{passwordConfirmError}}{{/passwordConfirmError}}</div>
+            </div>
+        </div>
+
+        <div>
+            <div>
+                <input placeholder="비밀번호 확인" class="rinput" id="pc" type="password" onkeyup="validatePassword()">
+                <!-- 비밀번호 일치 여부 오류 메시지 -->
+                <div id="password-error" style="color: #00c473; margin-bottom: 10px;"></div>
+            </div>
+        </div>
+
+        <button class="registerButton" type="submit" id="registerButton">회원가입</button>
+
+        <div style="margin-top: 15px">
+            이미 가입하셨나요? <a href="login" style="cursor: pointer; text-decoration: underline; color: black" id="login">로그인</a>
+        </div>
+        </div>
+    </div>
+</form>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+
+
+
+
+    function validatePassword() {
+        var password = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('pc').value;
+
+        // 비밀번호와 비밀번호 확인이 일치하지 않으면 오류 메시지 표시
+        if (password !== confirmPassword) {
+            document.getElementById('password').style.border = '3px solid #00c473';
+            document.getElementById('password-error').innerText = '비밀번호가 일치하지 않습니다.';
+        } else {
+            // 일치할 경우 테두리 색 원래대로, 오류 메시지 제거
+            document.getElementById('password').style.border = '';
+            document.getElementById('pc').style.border = '';
+            document.getElementById('password-error').innerText = '';
+        }
+    }
+
+    function validateForm() {
+        // Reset previous error messages
+        document.getElementById('name-error').innerText = '';
+        document.getElementById('email-error').innerText = '';
+        document.getElementById('password-error').innerText = '';
+
+        // Get values from the form
+        var name = document.getElementById('name').value.trim();
+        var email = document.getElementById('email').value.trim();
+        var password = document.getElementById('password').value.trim();
+        var confirmPassword = document.getElementById('pc').value.trim();
+
+        // Validate Name
+        if (name === '') {
+            document.getElementById('name-error').innerText = '이름을 입력하세요.';
+            return false;
+        }
+
+        // Validate Email
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            document.getElementById('email-error').innerText = '올바른 이메일 주소를 입력하세요.';
+            return false;
+        }
+
+        // Validate Password
+        if (password === '') {
+            document.getElementById('password-error').innerText = '비밀번호를 입력하세요.';
+            return false;
+        }
+
+        // Confirm Password
+        if (password !== confirmPassword) {
+            document.getElementById('password-error').innerText = '비밀번호가 일치하지 않습니다.';
+            return false;
+        }
+
+        // If all validations pass, return true
+        return true;
+    }
+
+
+    (function () {
+        document.getElementById('form-register').addEventListener('submit', (event) => {
+            // Validate the form before submitting
+            if (validateForm()) {
+                const currentTime = new Date();
+                const isoString = currentTime.toISOString().slice(0, -1); // Remove 'Z' at the end
+
+
+
+
+                fetch('/api/member', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'name': document.getElementById('name').value,
+                        'email': document.getElementById('email').value,
+                        'password': document.getElementById('password').value,
+                        'authority': 'GUEST',
+                        'registrationTime' : isoString
+                    })
+                })
+                        .then((res) => {
+                            if (res.ok) {
+                                console.log('success');
+                                window.location.href = '/login';
+                            } else {
+                                return res.text().then((errorMessage) => {
+                                    // 서버로부터 받은 에러 메시지를 처리
+                                    handleValidationErrors(JSON.parse(errorMessage));
+                                });
+                            }
+                        })
+                        .catch((err) => {
+                            console.error('error occurred');
+                        });
+            }
+        });
+
+        function handleValidationErrors(errors) {
+            // 각 필드에 대한 에러 메시지를 표시
+            if (errors.fieldErrors) {
+                errors.fieldErrors.forEach((fieldError) => {
+                    const fieldName = fieldError.field;
+                    const errorMessage = fieldError.message;
+
+                    // 각 필드에 대한 에러 메시지를 표시
+                    document.getElementById(`${fieldName}-error`).innerText = errorMessage;
+
+                    // 수정: nameError에 대한 처리
+                    if (fieldName === 'name') {
+                        document.getElementById('name-error').innerText = errorMessage;
+                        // alert 창을 통해 에러 메시지 표시
+                        alert(errorMessage);
+                    }
+                });
+            }
+        }
+    })();
+    $("#email").on("input", function() {
+        const email = $(this).val();
+
+        // 중복 여부 확인
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: "http://localhost:8099/api/member/check-email",
+            data: { email: email },
+            success: function (data) {
+                $("#olmessage").text(data);
+            }
+        });
+    });
+
+
+
+
+
+</script>
+
+</html>

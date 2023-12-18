@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅 메시지</title>
+    {{>layouts/W1003_header}}
+    <!-- SockJS 및 Stomp 라이브러리 추가 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="../css/W1005_chat.css" type="text/css">
+
+</head>
+
+<body>
+<div class="entire-chat">
+    <h1 class="chat-room-name">{{chatRoom.name}}</h1>
+
+    <ul id="chatMessages" class="chat-container" style="overflow-y: auto;">
+        {{#chatMessages}}
+            <li class="chat-message">
+                <div class="message-container">
+                    {{content}}
+                </div>
+            </li>
+        {{/chatMessages}}
+    </ul>
+    <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="메시지를 입력하세요..."/>
+        <button type="submit">전송</button>
+    </form>
+    <form id="fileForm" enctype="multipart/form-data" style="margin-left: 10px;">
+        <label for="fileInput" class="custom-file-upload">
+            <img src="../img/clip.png" alt="Clip Icon" style="position: relative; top: 4px;">
+        </label>
+        <span id="fileNameDisplay" style="margin-right: 10px;margin-bottom: 14px;">선택된 파일이 없습니다.</span>
+        <input type="file" id="fileInput" name="file" style="display: none;" onchange="displayFileName()"/>
+        <input type="hidden" id="roomIdInput" name="roomId" value="{{chatRoom.id}}"/>
+        <button type="button" onclick="uploadFile()">파일 업로드</button>
+    </form>
+</div>
+
+<script>
+    // 채팅
+    $(document).ready(function () {
+        var stompClient = null;
+
+        function connectWebSocket() {
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function (frame) {
+                console.log('연결됨: ' + frame);
+
+                // 채팅방에 연결되었으므로 채팅방에 있는 모든 메시지를 로드합니다.
+                stompClient.subscribe('/topic/chat/{{chatRoom.id}}/messages', function (response) {
+                    var message = JSON.parse(response.body);
+                    displayChatStartMessage(message);
+                });
+            });
+        }
+
+        function displayChatStartMessage(message) {
+            console.log("message", message)
+            var messageObject = JSON.parse(JSON.stringify(message));
+            var memberName = message.memberName;
+            console.log("messageObject", messageObject)
+            var messageElement = "<div>"+"<p>"+memberName+"</p>"+"<p class='speech_bubble'>" + messageObject.content + "</p>"+"<div>"+"</div>"+"</div>";
+            $("#chatMessages").append(messageElement);
+        }
+
+
+        function loadChatMessages() {
+            $.ajax({
+                url: "/api/chat/{{chatRoom.id}}/messages",
+                type: "GET",
+                success: function (messages) {
+                    console.log(messages);
+                    messages.forEach(function (message) {
+                        displayChatListMessage(message);
+                    });
+                    // 새로운 메시지를 추가한 후 스크롤을 아래로 이동
+                    $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
+                },
+                error: function (error) {
+                    console.log("채팅 메시지 로딩 오류: " + error);
+                }
+            });
+        }
+
+        function displayChatListMessage(message) {
+            var content = JSON.parse(message["content"]);
+            var messageId = message["id"];
+            var memberName = message.memberName;
+
+            if (message["chatFile"]) {
+                // 파일이 있는 메시지의 경우
+                var file = message["chatFile"];
+
+                var downloadLink = '<a href="javascript:void(0);" onclick="downloadFile(\'' + file.filePath + '\', \'' + file.fileName + '\')"></br>다운로드</a>';
+                var messageElement = '<p class="speech_bubble"><strong>' + file.fileName + downloadLink + '</p>';
+                $("#chatMessages").append(messageElement);
+            } else {
+                // 파일이 없는 메시지의 경우
+                var messageElement = '<p>'+memberName+'</p>'+'<p class="speech_bubble">' + content.content + '</p>';
+                $("#chatMessages").append(messageElement);
+            }
+        }
+
+
+        // function displayChatListMessage(message) {
+        //     console.log("message", message)
+        //     var viewMessage = message["content"]
+        //     console.log("message1", viewMessage)
+        //     var messageObject = JSON.parse(viewMessage);
+        //     console.log("messageObject", messageObject)
+        //     var messageElement = "<p>" + messageObject.content + "</p>";
+        //     $("#chatMessages").append(messageElement);
+        // }
+
+        function sendMessage(messageContent) {
+            stompClient.send("/app/chat/{{chatRoom.id}}/sendMessage", {}, JSON.stringify({
+                'content': messageContent
+            }));
+        }
+
+        // WebSocket 연결
+        connectWebSocket();
+
+        // 기존 메시지 로드
+        loadChatMessages();
+
+        // 메시지 전송 폼 처리
+        $("#messageForm").submit(function (event) {
+            event.preventDefault();
+            var message = $("#messageInput").val();
+            var username = $("#usernameInput").val();
+            if (message === "") {
+                alert("메시지를 입력하세요.");
+                return;
+            }
+            sendMessage(message, username);
+            // 메시지 전송 후 입력 필드를 비움
+            $("#messageInput").val('');
+        });
+
+    });
+
+    function uploadFile() {
+        var fileInput = document.getElementById('fileInput');
+        var formData = new FormData(document.getElementById('fileForm'));
+        var fileNameDisplay = document.getElementById('fileNameDisplay');
+
+        // 파일을 선택하지 않은 경우
+        if (!fileInput.value) {
+            alert('파일을 선택하세요.');
+            return;
+        }
+
+        $.ajax({
+            url: '/s3/upload',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (fileUploadDTO) {
+                console.log('File uploaded successfully:', fileUploadDTO);
+
+                // 업로드된 파일의 내용을 채팅창에 표시
+                displayChatFileMessage(fileUploadDTO);
+
+                // 파일 선택란 초기화
+                fileInput.value = null;
+
+                // 파일 이름 표시 초기화
+                fileNameDisplay.textContent = '선택된 파일이 없습니다.';
+            },
+            error: function (error) {
+                console.error('File upload error:', error);
+            }
+
+
+        });
+    }
+
+
+    function displayChatFileMessage(fileUploadDTO) {
+        var messageElement = '<p class="speech_bubble"><strong>' + fileUploadDTO.originFileName + '</strong>이(가) 업로드되었습니다. <a href="javascript:void(0);" onclick="downloadFile(\'' + fileUploadDTO.fileDir + '\', \'' + fileUploadDTO.originFileName + '\')"></br>다운로드</a></p>';
+        $("#chatMessages").append(messageElement);
+
+        // 새로운 메시지를 추가한 후 스크롤을 아래로 이동
+        $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
+    }
+
+    function downloadFile(fileDir, fileName) {
+        // AJAX를 사용하여 파일 다운로드 URL에 접근
+        $.ajax({
+            url: "/s3/download/" + fileName,
+            data: {
+                "fileDir": fileDir
+            },
+            dataType: 'binary',
+            xhrFields: {
+                'responseType': 'blob'
+            },
+            success: function (data) {
+                // Blob 데이터를 파일로 변환
+                var blob = new Blob([data], {type: 'application/octet-stream'});
+
+                // Blob을 URL로 생성
+                var url = window.URL.createObjectURL(blob);
+
+                // 새로운 링크 엘리먼트 생성
+                var downloadLink = document.createElement("a");
+
+                // 다운로드 링크 설정
+                downloadLink.href = url;
+                downloadLink.download = fileName;
+
+                // 링크를 DOM에 추가하고 클릭
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+
+                // DOM에서 링크 제거
+                document.body.removeChild(downloadLink);
+            }
+        });
+    }
+
+    function displayFileName() {
+        var fileInput = document.getElementById('fileInput');
+        var fileNameDisplay = document.getElementById('fileNameDisplay');
+
+        if (fileInput.files.length > 0) {
+            // 파일이 선택되었을 때 파일 이름을 표시
+            fileNameDisplay.textContent = fileInput.files[0].name;
+        } else {
+            // 파일이 선택되지 않았을 때 기본 문구 표시
+            fileNameDisplay.textContent = '선택된 파일이 없습니다.';
+        }
+    }
+
+</script>
+</body>
+</html>

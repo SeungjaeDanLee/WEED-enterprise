@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{>layouts/W1003_header}}
+    <style>
+        .chat-room-box {
+            border: 1px solid #ddd; /* 테두리 스타일 지정 */
+            padding: 10px; /* 안쪽 여백 지정 */
+            margin-bottom: 10px; /* 아래쪽 여백 지정 */
+            border-radius: 5px; /* 테두리 모서리를 둥글게 만듦 */
+        }
+        .chat-room-box:hover{
+            background-color: #99e1c4;
+            cursor: pointer;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #popup {
+            display: none;
+            position: fixed;
+            top: 43%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+    <title>Chatting Rooms</title>
+</head>
+<body>
+<!--디자인 참고-->
+
+<!--디자인참고 끝-->
+<div style="width: 80%; background-color: white; margin-left: 230px; margin-top: 50px; padding: 30px; overflow: auto; border-radius: 10px; height: 80%; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);">
+    <div style="display: flex; justify-content: space-between;">
+        <h1>채팅방</h1>
+        <button onclick="openPopup()" style="width: 100px; background-color: #00c473; color: white; border-radius: 10px; border: 1px solid #00c473; font-size: 16px; font-weight: bold;">새 채팅방</button>
+    </div>
+<div style="margin-bottom: 30px;">{{#chatRooms}}</div>
+    <div class="chat-room-box">
+        <a href="/chat/{{id}}" style="text-decoration: none; color: black">{{name}}</a>
+    </div>
+<div>{{/chatRooms}}</div>
+</div>
+
+<div id="overlay"></div>
+
+<div id="popup">
+    <div style="width: 96%;background-color: white;padding: 5px;overflow: auto;border-radius: 10px;height: 80%;">
+        <h2>새 채팅방 만들기</h2>
+        <div>
+            <form action="/chat/create" method="post">
+                <!-- 예시: 채팅방 이름 입력 -->
+                <input placeholder="채팅방 이름" type="text" id="chatRoomName" name="chatRoomName" required style="
+    /* padding: 10px; */
+    padding-left: 10px;
+    width: 100%;
+    margin-top: 10px;
+    height: 35px;
+    border: 1px solid #ababab;
+    border-radius: 4px;
+    padding-top: 3px;
+">
+                <br>
+                <br>
+
+                <!-- 초대할 사용자 선택 -->
+
+                <div style="display: flex">
+                    <button type="submit" style="margin-top: 10px; background-color: #00c473; color: white; border-radius: 5px; border: 1px solid #00c473; padding: 5px; width: 105px; margin-right: 30px;" >확인</button>
+                    <button onclick="closePopup()" style="margin-top: 10px; background-color: #00c473; color: white; border-radius: 5px; border: 1px solid #00c473; padding: 5px; width: 105px">닫기</button>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+
+</div>
+
+<script>
+    function createNewChatRoom() {
+        window.location.href = "/chat/create";
+    }
+
+    function openPopup() {
+        document.getElementById("popup").style.display = "block";
+        document.getElementById("overlay").style.display = "block";
+    }
+
+    function closePopup() {
+        document.getElementById("popup").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+    }
+</script>
+
+</body>
+</html>

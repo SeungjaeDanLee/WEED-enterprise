@@ -1,0 +1,192 @@
+<link rel="stylesheet" href="/css/sidebar.css">
+
+
+<nav class="sidebar close">
+
+    <header>
+        <div class="image-text">
+                <span class="image" style="width: 75px;position: relative;right: 7px;">
+<!--                    <img src="/display?fileName={{userSession.fileName}}" alt="" style="width: 45px">-->
+                    <img src="https://weedbucket.s3.ap-northeast-2.amazonaws.com/img/{{userSession.fileName}}" alt="" style="width: 45px">
+                </span>
+
+            <div class="text logo-text">
+                <span class="name">{{userSession.name}}</span>
+                <span class="profession">{{userSession.deptName}}</span>
+            </div>
+        </div>
+
+        <i class='bx bx-chevron-right toggle'></i>
+    </header>
+
+    <div class="menu-bar">
+        <div class="menu">
+
+            <li class="search-box" style="display: none">
+                <i class='bx bx-search icon'></i>
+                <label>
+                    <input type="text" placeholder="준비중입니다...">
+                </label>
+            </li>
+
+            <ul class="menu-links">
+                <li class="nav-link">
+                    <a href="/todoList">
+                        <i class='bx bx-notepad icon'></i>
+                        <span class="text nav-text">할 일</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="/chat">
+                        <i class='bx bx-message-rounded-dots icon'></i>
+                        <span class="text nav-text">채팅</span>
+                    </a>
+                </li>
+
+
+                <li class="nav-link">
+                    <a href="/calendar">
+                        <i class='bx bx-calendar icon'></i>
+                        <span class="text nav-text">일정</span>
+                    </a>
+                </li>
+
+<!--                <li class="nav-link">-->
+<!--                    <a href="#">-->
+<!--                        <i class='bx bx-bell icon'></i>-->
+<!--                        <span class="text nav-text">알림</span>-->
+<!--                    </a>-->
+<!--                </li>-->
+
+                <li class="nav-link" id="working" style="display: none;">
+                    <a href="/working">
+                        <i class='bx bx-pie-chart-alt icon' ></i>
+                        <span class="text nav-text">근태관리</span>
+                    </a>
+                </li>
+
+                <li class="nav-link">
+                    <a href="/admin" id="admin">
+                        <i class='bx bx-badge-check icon' ></i>
+                        <span class="text nav-text">관리자</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+
+        <div class="bottom-content">
+            <li class="">
+                <a href="/logout">
+                    <i class='bx bx-log-out icon' ></i>
+                    <span class="text nav-text">로그아웃</span>
+                </a>
+            </li>
+
+            <li class="mode">
+                <div class="sun-moon">
+                    <i class='bx bx-moon icon moon'></i>
+                    <i class='bx bx-sun icon sun'></i>
+                </div>
+                <span class="mode-text text">모드변경</span>
+
+                <div class="toggle-switch">
+                    <span class="switch"></span>
+                </div>
+            </li>
+
+        </div>
+    </div>
+
+</nav>
+<div class="modal" id="myModal">
+    <div class="modal-content">
+        <!-- 모달 내용 -->
+        <div class="modal-header" style="position: relative; height: 190px; overflow: hidden;">
+            <!-- 배경 이미지 -->
+            <div style="background-image: url(./Img/profile.png); background-size: cover; position: absolute; top: 0; left: 0; width: 100%; height: 100%; "></div>
+
+            <!-- 검정색 투명 배경 -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); filter: none"></div>
+
+            <!-- 모달 내용 텍스트 -->
+            <span class="close" id="closeModal" style="float: right; position: relative; bottom: 10px;">&times;</span>
+            <div style="padding: 20px; position: relative; top: 92px; z-index: 1;">
+                <input class="nameEdit" placeholder="{{userSession.name}}" style="background: none;border: none;color: white;font-size: 20px;font-weight: 600;">
+                <h3></h3>
+                <p>{{userSession.deptName}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+
+
+    const body = document.querySelector('body'),
+            sidebar = body.querySelector('nav'),
+            toggle = body.querySelector(".toggle"),
+            searchBtn = body.querySelector(".search-box"),
+            modeSwitch = body.querySelector(".toggle-switch"),
+            modeText = body.querySelector(".mode-text");
+
+
+    toggle.addEventListener("click" , () =>{
+        sidebar.classList.toggle("close");
+    })
+
+    searchBtn.addEventListener("click" , () =>{
+        sidebar.classList.remove("close");
+    })
+
+    modeSwitch.addEventListener("click" , () =>{
+        body.classList.toggle("dark");
+
+        if(body.classList.contains("dark")){
+            modeText.innerText = "Light mode";
+        }else{
+            modeText.innerText = "Dark mode";
+
+        }
+    });
+    const userSession = document.querySelector(".name");
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const userSession = document.querySelector(".name");
+
+        if (!userSession) {
+            window.location.href = '/login';
+        }
+
+        // 나머지 코드...
+    });
+
+    document.querySelector('#admin').addEventListener('click', function (event) {
+        event.preventDefault(); // 기본 이벤트(페이지 이동) 막기
+
+        // userSession은 Mustache 템플릿에서 생성된 것으로 가정합니다.
+        // 실제로는 서버에서 가져온 정보를 사용해야 합니다.
+        var userAuthority = "{{userSession.authority}}";
+
+        if (userAuthority === "ADMIN") {
+            location.href = "/admin";
+        } else {
+            alert("관리자만 입장 가능합니다.");
+        }
+    });
+
+    // 페이지가 로드될 때 사용자 권한에 따라 "working" 아이콘을 숨기거나 보이게 설정
+    var userAuthority = "{{userSession.authority}}";
+    console.log(userAuthority);
+    if (userAuthority === "ADMIN" && working) {
+        working.style.display = 'block';
+    }else {
+        working.style.display = 'none';
+    }
+
+
+</script>

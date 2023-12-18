@@ -1,0 +1,63 @@
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link rel="stylesheet" href="/css/organize.css">
+<link  href="js/organize.js">
+
+<div class="all">
+    <div style="padding: 17px">
+        <div>
+            <span class="orT">조직도</span>
+            <span style="color: #A2A2A2" class="total-members">총 {{totalMembers}}명</span>
+        </div>
+    </div>
+    <div style="border-bottom: 1px solid #e5e5e5"></div>
+    <div style="padding-right: 17px; padding-left: 17px; padding-top: 17px">
+        <div style="position: relative;bottom: 23px;">
+            <i class='bx bx-search-alt-2' style='color:#b1abab' ></i>
+            <input placeholder="멤버 검색" class="m-search">
+        </div>
+    </div>
+    <div style="height: 5px"></div>
+    <div class="memberList" style="padding-left: 17px; padding-right: 17px">
+        <div id="departments">
+            {{#depts}}
+                <div>
+                    <span class="depts">{{deptName}}</span>
+                    <div style="margin-top: 10px">
+                        {{#members}}
+                            <div class="member-img">
+                                <i class='bx bxs-user-circle' style="font-size: 30px;color:#b1abab"></i>
+                                <span style="position: relative; bottom: 8px;left: 8px; font-weight: 600">{{name}}</span>
+                            </div>
+                            <div style="border-bottom: 1px solid #e5e5e5; margin-bottom: 17px" class="bb" id="bb"></div>
+                        {{/members}}
+                    </div>
+                </div>
+            {{/depts}}
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        // 검색 입력을 기반으로 회원을 필터링하는 함수
+
+        function filterMembers() {
+            var searchTerm = $('.m-search').val().toLowerCase();
+
+            // 모든 회원 숨기기
+            $('.member-img').hide();
+
+
+            // 검색어와 일치하는 회원만 표시
+            $('.member-img:contains(' + searchTerm + ')').show();
+        }
+
+        // 검색 입력이 변경될 때 필터링 트리거
+        $('.m-search').on('input', function () {
+            filterMembers();
+            $('.bb').hide();
+        });
+
+    });
+
+</script>

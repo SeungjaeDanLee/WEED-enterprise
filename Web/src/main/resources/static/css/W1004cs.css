@@ -1,0 +1,207 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap");
+
+
+
+/*캘린더 사이즈*/
+#calendar {
+    max-width: 1100px;
+    height: 800px;
+    margin: 0 auto;
+}
+
+/*캘린더 배경색*/
+.fc-view-harness{
+    background-color: rgba(255, 255, 255, 0.47);
+}
+
+/* 날짜위치(적용안됨)*/
+.fc-daygrid-day-top{
+    display: flex;
+    flex-direction: column;
+}
+
+/*이벤트추가 날짜높이 고정*/
+.fc .fc-daygrid-day-frame{
+    height: 100px;
+}
+
+
+/* 일요일 날짜 빨간색 */
+.fc-day-sun a {
+    color: red;
+    text-decoration: none;
+}
+
+/* 토요일 날짜 파란색 */
+.fc-day-sat a {
+    color: blue;
+    text-decoration: none;
+}
+
+/* ========일정 설정 모달창디자인======== */
+
+/*모달창*/
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: fit-content;
+    height: fit-content;
+    padding: 2px;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    z-index: 1000;
+}
+
+.modal-detail{
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: fit-content;
+    height: fit-content;
+    padding: 2px;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    z-index: 9999;
+}
+
+.show{
+    display: block;
+}
+
+
+/*일정 추가 (모달창 제목)*/
+.modalTitle {
+    font-weight: bold;
+    font-size: 20px;
+    padding: 5px;
+    color: #888888;
+}
+
+.contentBox{
+    padding: 10px;
+    border-top: 2px solid #cbcbcb;
+    border-bottom: 2px solid #cbcbcb;
+}
+
+/* 일정제목 및 일정내용 그룹 */
+.eventFormGroup{
+    padding-bottom: 5px;
+}
+
+/* 일정제목, 일정내용 텍스트*/
+.eventText{
+    font-size: 18px;
+}
+
+/* 일정제목 적는 창*/
+.inputTitle{
+    border: 1px solid #cbcbcb;
+    border-radius: 3px;
+    padding-left: 5px;
+    height: 30px;
+    width: 400px;
+}
+
+/* 일정내용 적는 창*/
+.inputContent{
+    border: 1px solid #cbcbcb;
+    border-radius: 3px;
+    text-align: left;
+    padding-left: 5px;
+    height: 60px;
+    width: 400px;
+}
+
+/*모달창 버튼 그륩*/
+.modalbutton{
+    margin: 10px;
+    float: right;
+    display: flex;
+}
+
+
+/* 저장버튼*/
+.saveEvent{
+    background-color: rgb(0 193 107);
+    color:white;
+    border:none;
+    border-radius:5px;
+    font-weight: bold;
+    font-size: 14px;
+    width: 50px;
+    height: 30px;
+    margin-left: inherit;
+}
+
+/* 취소버튼*/
+.closeEvent{
+    background-color: white;
+    color: #7f7f7f;
+    border: 2px solid #afafaf;
+    border-radius:5px;
+    font-weight: bold;
+    font-size: 14px;
+    width: 50px;
+    height: 30px;
+}
+
+/*삭제버튼 */
+.deletediv{
+    display: initial;
+    margin-right: 240px;
+}
+
+.deleteEvent{
+    background-color: #d23636;
+    color: #ffffff;
+    border: 2px solid #d23636;
+    border-radius:5px;
+    font-weight: bold;
+    font-size: 14px;
+    width: 50px;
+    height: 30px;
+}
+
+
+/*컬러스타일랑*/
+.colorstyle{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.colorstyle::-webkit-color-swatch {
+    border-radius: 5px;
+    border: none;
+}
+.colorstyle::-moz-color-swatch {
+    border-radius: 5px;
+    border: none;
+}
+
+/* 이벤트시간등록 안보이게설정 */
+.fc-event-time{
+    display: none;
+}
+
+/* 이벤트편집 */
+.fc-event-draggable {
+    cursor: move; /* 이동 가능한 일정에 대한 마우스 커서 스타일을 '이동'으로 지정합니다. */
+}
+
+.fc-event-resizable {
+    cursor: ew-resize; /* 크기 조절 가능한 일정에 대한 마우스 커서 스타일을 '좌우 조절'으로 지정합니다. */
+}
+
+
+

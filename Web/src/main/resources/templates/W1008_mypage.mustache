@@ -1,0 +1,238 @@
+{{>layouts/W1003_header}}
+<link rel="stylesheet" href="/css/register.css">
+<style>
+    /* 초기 스타일 */
+
+    .mypage1 {
+        border-radius: 15px;
+        text-align: center;
+        margin-left: 136px;
+        background: white;
+    }
+
+    /* 모바일 화면에 대한 스타일 */
+    @media (max-width: 767px) {
+        .mypage1 {
+            width: 90%;
+            margin-left: 5%;
+        }
+    }
+
+    /* 태블릿 화면에 대한 스타일 */
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .mypage1 {
+            width: 70%;
+            margin-left: 15%;
+        }
+    }
+    .mypage1 {
+        border-radius: 15px;
+        text-align: center;
+        margin-left: 136px;
+        background: white;
+        overflow-y: auto; /* 세로 스크롤을 만듭니다. */
+    }
+
+    /* 데스크탑 화면에 대한 스타일 */
+    @media (min-width: 1024px) {
+        .mypage1 {
+            width: 50%;
+            margin-left: 25%;
+        }
+    }
+
+</style>
+
+
+<div style="margin-top: 20px;border-radius: 15px;text-align: center;margin-left: 136px;height: 90%;width: 90%;background: white;" class="mypage1">
+    <body>
+    <!--내용-->
+    <form id="form-register" onsubmit="return false;">
+        <div class="nameInput" style="margin: 0 !important;display: flex;justify-content: space-evenly;align-items: center;">
+            <div>
+                <img src="https://weedbucket.s3.ap-northeast-2.amazonaws.com/img/logo2.png">
+            </div>
+            <div style="height: 754px;width: 500px;margin-top: 50px; ">
+                <div class="rname" style="right: 157px">사진</div>
+                <div>
+                    <div style="text-align: left; display: flex; align-items: center;">
+<!--                        <img id="profileImage" src="/display?fileName={{userSession.fileName}}" style="border-radius: 50%; width: 100px; margin-left: 100px; margin-bottom: 15px; margin-right: 35px;">-->
+                        <img id="profileImage" src="https://weedbucket.s3.ap-northeast-2.amazonaws.com/img/{{userSession.fileName}}" style="border-radius: 50%; width: 100px; margin-left: 100px; margin-bottom: 15px; margin-right: 35px;">
+<!--                        <button onclick="deleteImage()" style="margin-bottom: 57px; background: white; width: 80px; height: 30px; border-radius: 5px; color: #9f9f9f; border: 1px solid #9f9f9f; margin-right: 15px">삭제</button>-->
+                        <label for="file">
+                            <div class="btn-upload" style="background: white;width: 124px;height: 30px;border-radius: 5px;color: #00c473;border: 1px solid #00c473;margin-bottom: 58px;padding-left: 48px;font-size: 13px;padding-top: 4px;">수정</div>
+                        </label>
+                        <input type="file" name="uploadFiles" id="file" style="display: none" onchange="previewImage(this)" multiple>
+                    </div>
+                </div>
+                <button class="uploadBtn" style="position: relative;bottom: 55px;width: 125px;left: 47px;height: 30px;color: white;background-color: #00c473;border: none;border-radius: 5px;">저장</button>
+
+
+
+                <div class="rname" style="right: 159px">이름</div>
+                <div>
+                    <div>
+                        <input  class="rinput" name="name" id="name" style="height: 47px" placeholder="{{userSession.name}}">
+                    </div>
+                </div>
+
+                <div class="rname" style="right:151px " id="en">이메일</div>
+                <div>
+                    <div>
+                        <input class="rinput" id="email" name="email" style="height: 47px" placeholder="{{userSession.email}}" disabled>
+                        <div id="olmessage" style="color:#00C473FF;"></div>
+                    </div>
+                </div>
+                <div class="rname" style="right:153px " id="en">부서명</div>
+                <div>
+                    <div>
+                        <input class="rinput" id="email" name="email" style="height: 47px" placeholder="{{userSession.deptName}}" disabled>
+                        <div id="olmessage" style="color:#00C473FF;"></div>
+                    </div>
+                </div>
+
+                <div class="rname" style="right:142px;">비밀번호</div>
+                <div>
+                    <div>
+                        <input placeholder="비밀번호 입력" class="rinput" name="password" id="password" type="password" style="height: 47px">
+                    </div>
+                </div>
+
+                <div>
+                    <div>
+                        <input placeholder="비밀번호 확인" class="rinput" id="pc" type="password" onkeyup="validatePassword()" style="height: 47px">
+                        <!-- 비밀번호 일치 여부 오류 메시지 -->
+                        <div id="password-error" style="color: #00c473; margin-bottom: 10px;"></div>
+                    </div>
+                </div>
+
+                <button class="registerButton" type="submit" id="registerButton" style="width: 346px">회원수정</button>
+
+            </div>
+        </div>
+    </form>
+
+    </body>
+</div>
+    <script>
+
+        $(document).ready(function() {
+
+            $.ajax({
+                url: '/getProfileImageName',
+                type: 'GET',
+                success: function(result) {
+                    if (result !== null) {
+                        // 파일명이 존재하면 이미지 업데이트
+                        // document.getElementById('profileImage').src = '/Img/' + result;
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus);
+                }
+            });
+        });
+
+
+
+        function previewImage(input) {
+        var file = input.files[0];
+
+        if (file) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+        document.getElementById('profileImage').src = e.target.result;
+    };
+
+        reader.readAsDataURL(file);
+    }
+    }
+
+        $('.uploadBtn').click(function () {
+        var formData = new FormData();
+        var inputFile = $("input[type='file']");
+
+        var files = inputFile[0].files;
+
+        for (var i = 0; i < files.length; i++) {
+        console.log(files[i]);
+        formData.append("uploadFiles", files[i]);
+    }
+
+        $.ajax({
+        url: '/uploadAjax',
+        processData: false,
+        contentType: false,
+        data: formData,
+        type: 'POST',
+        dataType: 'json',
+        success: function (result) {
+        console.log(result);
+        if (result && result === "File uploaded successfully") {
+        // 파일 업로드 성공
+        // document.getElementById('profileImage').src = '/display?fileName=' + files[0].name;
+            document.getElementById('profileImage').src = '/display?fileName=' + files[0].name;
+
+
+        } else {
+            // 파일 업로드 실패 또는 다른 예외 처리
+        }
+    },
+        error: function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+    }
+    }); // ajax 끝
+            // alert("프로필 사진이 변경되었습니다.");
+            setTimeout(() => {
+                alert("프로필 사진이 변경되었습니다.");
+                location.href = "/mypage";
+            }, 3000);
+
+            // 3초 후 리로드
+            // setTimeout(() => location.href = "/mypage", 3000);
+            //location.reload();
+    });
+
+        $('.registerButton').click(function () {
+            var name = $("#name").val();
+            var password = $("#password").val();
+
+            // 이름과 비밀번호가 모두 없거나 빈 문자열인 경우
+            if ((!name || name.trim() === "") && (!password || password.trim() === "")) {
+                alert("수정된 내용이 없습니다.");
+                return; // 아무런 변경이 없으므로 함수 종료
+            }
+
+            var formData = new FormData();
+            formData.append("name", name);
+            formData.append("password", password);
+
+            $.ajax({
+                url: '/updateNameAndPassword',
+                processData: false,
+                contentType: false,
+                data: formData,
+                type: 'POST',
+                success: function (result) {
+                    if (result === "Success") {
+                        alert("프로필이 수정되었습니다.");
+                    } else if (result === "NoChanges") {
+                        alert("수정된 내용이 없습니다.");
+                    } else {
+                        // 기타 예외 처리
+                        console.log(result);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus);
+                }
+            });
+        });
+
+
+
+
+
+
+    </script>

@@ -1,0 +1,61 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Noto+Sans+KR:wght@500;600;700&family=Single+Day&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<!--헤더-->
+</div>
+<!--내용-->
+<form action="/login" method="POST">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <div class="nameInput" style="display: flex; flex-wrap: nowrap;justify-content: space-around;">
+        <div style="height: 630px; border: 1px solid #d2cfcf;">
+        <h1 style="margin: 0 auto;text-align: center;margin-top:50px;position: relative;margin-bottom: 55px;right: 140px;">로그인</h1>
+
+        <div class="rname" style="right: 165px">이메일</div>
+        <div style="width: 500px;">
+            <div><input placeholder="이메일 입력" class="rinput" name="email" id="email" type="email"></div>
+        </div>
+
+
+        <div class="rname" style="right:154px;">비밀번호</div>
+        <div>
+            <input placeholder="비밀번호 입력" class="rinput" name="password" id="password" type="password">
+        </div>
+            {{#loginErrorMessage}}
+                <p id="valid" class="alert alert-danger" style="margin-top: 0px; color: #00c473" >
+                    {{loginErrorMessage}}
+                </p>
+            {{/loginErrorMessage}}
+
+
+
+            <button class="registerButton" type="submit">로그인</button>
+
+        <div style="margin-top: 45px">
+            위드가 처음이신가요? <a href="register" style="cursor: pointer; text-decoration: underline; color: black" >회원가입</a>
+        </div>
+        <div style="margin-top: 15px">
+            비밀번호를 잊으셨나요? <a href="findPassword" style="cursor: pointer; text-decoration: underline; color: black" >비밀번호 찾기</a>
+        </div>
+        </div>
+    </div>
+
+</form>
+
+</body>
+
+
+</html>
+

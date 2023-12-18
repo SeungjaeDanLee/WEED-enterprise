@@ -1,0 +1,158 @@
+{{>layouts/W1003_header}}
+<link href="css/todo.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="js/todo.js"></script>
+<!---->
+
+<div class="todoWrap">
+    <div class="todoContainer">
+        <div class="tdHeader">
+            <h3 style="margin-bottom: 10px">오늘의 할 일 </h3>
+            <ul class="nav" id="todoNav">
+                <li class="nav-item">
+                    <i class='bx bx-list-ul'></i>
+                    <a class="nav-link " data-tab="list" aria-current="page" href="#" id="nav1" style="font-weight: bold; color: lightgray">리스트</a>
+                </li>
+                <li class="nav-item">
+                    <i class='bx bx-edit-alt'></i>
+                    <a class="nav-link" data-tab="write" href="#" id="nav2" style="font-weight: bold; color: #00c473 ;">작성하기</a>
+                </li>
+            </ul>
+            <div style="display: flex">
+                <div class="bb"  id="todoBorder1" ></div>
+                <div class="bb active"  id="todoBorder2"></div>
+            </div>
+        </div>
+
+        <div class="cont_area" style="overflow: auto;height: 729px;">
+            <div class="cont active" id="tab1" style="display: none">
+<!--                <div class="progressScore" style="width: 1250px;margin-left: 115px;display: flex;margin-top: 30px;justify-content: space-between;">-->
+<!--                    <div class="tdCnt">{{getCheckedTodoCount}}/{{totalTodoCount}}</div>-->
+<!--                    <div class="tdPercent">0%</div>-->
+<!--                </div>-->
+<!--                <div id="progressBarContainer">-->
+<!--                    <div id="progressBar"></div>-->
+<!--                </div>-->
+                {{#todoList}}
+                    <div class="todoList" style="display: flex; padding: 10px" data-id="{{id}}" data-checked="{{checked}}">
+                        {{#checked}}
+                            <i class='bx bx-checkbox-checked' style="font-size: 40px;color:#00c473;margin-right: 10px;"></i>
+                            <i class='bx bx-checkbox' style="font-size: 40px;color:#00c473;margin-right: 10px; cursor: pointer; display: none"></i>
+                        {{/checked}}
+                        {{^checked}}
+                            <i class='bx bx-checkbox' style="font-size: 40px;color:#00c473;margin-right: 10px; cursor: pointer;"></i>
+                            <i class='bx bx-checkbox-checked' style="font-size: 40px;color:#00c473;margin-right: 10px; display: none"></i>
+                        {{/checked}}
+                        <p style="margin-top: 6px;font-weight: 600;font-size: 18px;" class="tdContentP">{{content}}</p>
+                    </div>
+                {{/todoList}}
+            </div>
+            <div class="cont " id="tab2">
+                <input type="text" placeholder="제목을 입력하세요" class="tdTitle" autofocus>
+                <div style="border-bottom: 1px solid #f2f1f1; margin-bottom: 15px"></div>
+                <div class="tdContent">
+                    <input type="text" class="tdContentInput" placeholder="할일 추가(Enter 또는 Tab) / 최대 60자">
+                </div>
+                <div style="border-bottom: 1px solid #f2f1f1; margin-bottom: 15px"></div>
+                <div style="display: flex;justify-content: flex-end;">
+                    <button type="submit" class="tdBtn">작성하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('.tdBtn').click(function () {
+            var todos = [];
+
+            $('.tdContentInput').each(function() {
+                var content = $(this).val();
+                if (content.trim() !== '') {
+                    todos.push({ content: content });
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/addTodoList",
+                contentType: "application/json",
+                data: JSON.stringify(todos),
+                success: function (response) {
+                    console.log(response);
+                    // 추가된 내용을 다시 표시
+                    // TODO: 서버로부터 todoList를 가져오는 코드 필요
+                    displayTodoList(response.todoList);
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+            location.reload();
+        });
+
+        //$('.cont_area').on('click', '.bx-checkbox, .bx-checkbox-checked', function () {
+        $('.bx-checkbox, .bx-checkbox-checked').on('click', function () {
+            var todoList = $(this).closest('.todoList');
+            var todoId = todoList.data('id');
+            var isChecked = todoList.data('checked');
+
+            // 수정된 부분: 클릭 이벤트 핸들러 안에서 checked 상태를 반전시키도록 수정
+            // isChecked = !isChecked;
+
+            console.log(isChecked)
+            $.ajax({
+                type: "POST",
+                url: "/updateTodoStatus",
+                data: {
+                    todoId: todoId,
+                    checked: isChecked ? 1 : 0
+                },
+                success: function (response) {
+                    console.log(response);
+                    if (isChecked) {
+                        todoList.find('.bx-checkbox-checked').css('display', 'block');
+                        todoList.find('.bx-checkbox').css('display', 'none');
+                        todoList.find('.tdContentP').css('text-decoration', 'line-through');
+                        todoList.find('.tdContentP').css('color', 'lightgray');
+                        todoList.data('checked', false);
+                    } else {
+                        todoList.find('.bx-checkbox-checked').css('display', 'none');
+                        todoList.find('.bx-checkbox').css('display', 'block');
+                        todoList.find('.tdContentP').css('text-decoration', 'none');
+                        todoList.find('.tdContentP').css('color', 'black');
+                        todoList.data('checked', true);
+                    }
+
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+        displayTodoList(response.todoList);
+
+
+    });
+
+    function displayTodoList(todoList) {
+        var template = $('#todo-template').html();
+        var rendered = Mustache.render(template, { todoList: todoList });
+
+        // 백분율 계산 및 tdPercent 업데이트
+        var getCheckedTodoCount = todoList.filter(todo => todo.checked).length;
+        var totalTodoCount = todoList.length;
+        var percentage = totalTodoCount > 0 ? Math.round((getCheckedTodoCount / totalTodoCount) * 100) : 0;
+
+        $('.tdCnt').text(`${getCheckedTodoCount}/${totalTodoCount}`);
+        $('.tdPercent').text(`${percentage}%`);
+
+        $('.cont#tab1').html(rendered);
+    }
+
+
+
+</script>

@@ -1,0 +1,98 @@
+.todoWrap{
+    margin: 0;
+}
+
+.todoContainer{
+    border-radius: 5px;
+    background: white;
+    padding: 20px;
+    width: 80%;
+    height: 830px;
+    margin-left: 230px;
+    margin-right: 120px;
+    margin-top: 50px;
+}
+.nav{
+    display: flex;
+    justify-content: space-around;
+    list-style-type: none;
+}
+.nav-link{
+    text-decoration-line: none;
+    color: black;
+}
+.bb{
+    margin-top: 5px;
+    border-bottom: 1px solid lightgray;
+    margin-bottom: 5px;
+    width: 750px;
+}
+.tdTitle{
+    border: none;
+    height: 50px;
+    font-size: 18px;
+    width: 100%;
+}
+input.tdTitle:focus {outline: none;}
+
+.tdContentInput{
+    border: none;
+    height: 50px;
+    font-size: 15px;
+    width: 99.5%;
+    padding: 15px;
+    margin-left: 2px;
+    border-radius: 4px;
+}
+
+.tdBtn{
+    width: 85px;
+    height: 37px;
+    background: #00c473;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    border: 1px solid #00c473;
+    font-size: 15px;
+}
+
+/* CSS (아래 코드를 추가하거나 수정) */
+#todoBorder {
+    height: 3px;
+    /*background-color: #000; !* 검정색 *!*/
+    /*transition: width 0.3s ease;*/
+}
+
+#todoNav .nav-link.active {
+    color: #00c473; /* 초록색 */
+}
+
+.bb.active{
+    border-color: #00c473;
+}
+#todoNav .nav-link {
+    position: relative;
+    color: #000; /* 기본 텍스트 색상 */
+    transition: color 0.3s ease;
+}
+
+#todoNav .nav-link:hover {
+    color: #00FF00; /* 마우스 오버시 텍스트 색상 */
+}
+
+#progressBarContainer {
+    width: 87%;
+    background-color: #99e0c3;
+    border-radius: 20px;
+    height: 30px;
+    margin-left: 91px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+
+#progressBar {
+    height: 100%;
+    border-radius: 20px;
+    background-color: #00c473; /* 채워지는 부분의 색상 */
+}
